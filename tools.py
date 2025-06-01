@@ -44,7 +44,7 @@ class Tools:
     class Valves(BaseModel):
         CITATION: bool = Field(default="True", description="True or false for citation")
         searchAPI: str = Field(
-            default="{{your local hosted network}}/api/v0/maps/places"
+            default="{{your localhost tunnel link}}/api/v0/maps/places"
         )
 
     def __init__(self):
@@ -100,7 +100,7 @@ class Tools:
             for i, place in enumerate(place_json, 1):
                 name = place.get("name", "Unknown")
                 address = place.get("address", "No address")
-                map_url = place.get("mapUrl", "No map link")
+                map_url = place.get("maps", "No map link")
                 formatted_places.append(
                     f"{i}. {name}\n   Address: {address}\n   Maps: {map_url}"
                 )
@@ -108,15 +108,6 @@ class Tools:
                 formatted_places
             )
 
-            # try:
-            #     # Try to parse as JSON for better formatting
-            #     place_json = json.loads(place_data)
-            #     place_data = json.dumps(place_json, indent=2)
-            # except:
-            #     # If not JSON, use the text as is
-            #     pass
-
-            # formatted_output = f"Place suggestions for {query}:\n{place_data}"
             await emitter.success_update(f"Place suggestions for {query} retrieved!")
             return formatted_output
 

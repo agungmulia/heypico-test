@@ -4,7 +4,6 @@ class GoogleMapsService {
     this.httpClient = httpClient;
   }
 
-
   async searchPlaces(query, location) {
     const url = `https://maps.googleapis.com/maps/api/place/textsearch/json`;
     const response = await this.httpClient.get(url, {
@@ -16,13 +15,10 @@ class GoogleMapsService {
       },
     });
 
-    console.log("masuk kesini bang");
-
-
     return response.data.results.map((place) => ({
       name: place.name,
       address: place.formatted_address,
-      locationUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      maps: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         place.name
       )}`,
     }));

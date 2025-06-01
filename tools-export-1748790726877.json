@@ -1,0 +1,44 @@
+[
+    {
+        "id": "search_places",
+        "user_id": "a92dac11-e266-42a7-a0f3-d56abe80a473",
+        "name": "search_places",
+        "content": "\"\"\"\ntitle: Google Maps Local Search\nauthor: Agung Mulia\ndescription: A tool Connect Local server Backend to fetch places recomendation from google cloud.\nrequirements: requests\nversion: 0.0.1\nlicense: MIT\n\"\"\"\n\nfrom typing import Any, Callable\nimport requests\nimport json\nfrom pydantic import BaseModel, Field\n\n\nclass EventEmitter:\n    def __init__(self, event_emitter: Callable[[dict], Any] = None):\n        self.event_emitter = event_emitter\n\n    async def progress_update(self, description):\n        await self.emit(description)\n\n    async def error_update(self, description):\n        await self.emit(description, \"error\", True)\n\n    async def success_update(self, description):\n        await self.emit(description, \"success\", True)\n\n    async def emit(self, description=\"Unknown State\", status=\"in_progress\", done=False):\n        if self.event_emitter:\n            await self.event_emitter(\n                {\n                    \"type\": \"status\",\n                    \"data\": {\n                        \"status\": status,\n                        \"description\": description,\n                        \"done\": done,\n                    },\n                }\n            )\n\n\nclass Tools:\n    class Valves(BaseModel):\n        CITATION: bool = Field(default=\"True\", description=\"True or false for citation\")\n        searchAPI: str = Field(\n            default=\"{{your localhost tunnel link}}/api/v0/maps/places\"\n        )\n\n    def __init__(self):\n        self.valves = self.Valves()\n        self.citation = self.valves.CITATION\n\n    async def get_place_suggestions(\n        self,\n        query: str,\n        location: str,\n        __event_emitter__: Callable[[dict], Any] = None,\n        __user__: dict = {},\n    ) -> str:\n        \"\"\"\n        Provides place suggestions based on a text query and optional location bias using the Google Maps Text Search (New) API.\n        :param query: The text query to search for (e.g., \"restaurants in San Francisco\").\n        :param location_bias: (Optional) A location bias to prioritize results (e.g., circle around a lat/lng).\n        :return: Details about the places found or an error message.\n        \"\"\"\n        emitter = EventEmitter(__event_emitter__)\n\n        try:\n            await emitter.progress_update(f\"Searching for places matching: {query}\")\n\n            # Determine which API key to use\n            searchAPI = self.valves.searchAPI\n\n            # Prepare the API request\n            await emitter.progress_update(f\"Fetching data for query: {query}\")\n\n            headers = {\n                \"Content-Type\": \"application/json\",\n            }\n\n            params = {\"query\": query, \"location\": location}\n\n            # Make the API request\n            response = requests.get(searchAPI, headers=headers, params=params)\n\n            # Check if the request was successful\n            if response.status_code != 200:\n                raise Exception(\n                    f\"API request failed with status code: {response.status_code} - {response.text}\"\n                )\n\n            # Parse and format the response\n            place_json = response.json()\n\n            if not isinstance(place_json, list):\n                return \"No results found for the given query.\"\n\n            formatted_places = []\n            for i, place in enumerate(place_json, 1):\n                name = place.get(\"name\", \"Unknown\")\n                address = place.get(\"address\", \"No address\")\n                map_url = place.get(\"maps\", \"No map link\")\n                formatted_places.append(\n                    f\"{i}. {name}\\n   Address: {address}\\n   Maps: {map_url}\"\n                )\n            formatted_output = f\"Place suggestions for '{query}':\\n\\n\" + \"\\n\\n\".join(\n                formatted_places\n            )\n\n            await emitter.success_update(f\"Place suggestions for {query} retrieved!\")\n            return formatted_output\n\n        except Exception as e:\n            error_message = f\"Error: {str(e)}\"\n            if \"401\" in str(e) or \"403\" in str(e):\n                error_message += \" (Potential Google Maps API Key issue. Please check your API key and ensure the Places API is enabled.)\"\n            await emitter.error_update(error_message)\n            return error_message\n",
+        "specs": [
+            {
+                "name": "get_place_suggestions",
+                "description": "Provides place suggestions based on a text query and optional location bias using the Google Maps Text Search (New) API.",
+                "parameters": {
+                    "properties": {
+                        "query": {
+                            "description": "The text query to search for (e.g., \"restaurants in San Francisco\").",
+                            "type": "string"
+                        },
+                        "location": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "query",
+                        "location"
+                    ],
+                    "type": "object"
+                }
+            }
+        ],
+        "meta": {
+            "description": "Search for places on Google Maps",
+            "manifest": {
+                "title": "Google Maps Local Search",
+                "author": "Agung Mulia",
+                "description": "A tool Connect Local server Backend to fetch places recomendation from google cloud.",
+                "requirements": "requests",
+                "version": "0.0.1",
+                "license": "MIT"
+            }
+        },
+        "access_control": {},
+        "updated_at": 1748795246,
+        "created_at": 1748791141
+    }
+]
