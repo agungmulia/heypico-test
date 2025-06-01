@@ -6,6 +6,7 @@ class GoogleMapsService {
 
   async searchPlaces(query, location) {
     const url = `https://maps.googleapis.com/maps/api/place/textsearch/json`;
+
     const response = await this.httpClient.get(url, {
       params: {
         query: query,
