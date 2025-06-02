@@ -69,7 +69,8 @@ docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-
 ```
 > Open WebUI will be available at: [http://localhost:3000](http://localhost:3000)
 
-![image](https://github.com/user-attachments/assets/6def558b-08f7-4aeb-bee5-3c84846f9bcd)
+![image](https://github.com/user-attachments/assets/effdec6c-39ea-4fae-a5d0-cdf7fb4e8092)
+
 > Make sure that the Open WebUI already finished setup so you can access [http://localhost:3000](http://localhost:3000)
 ---
 ### 4. 🔌 Start the Backend Server
@@ -96,36 +97,35 @@ nodemon server.js
 ---
 ### 5. 🔌 Connect the Open WebUI to the backend server
 1. Login to Open WebUI
-![image](https://github.com/user-attachments/assets/b5dd6f3d-47d3-4ccb-a721-709aebf6a908)
+![image](https://github.com/user-attachments/assets/ef5bc293-6e83-45aa-8be2-f409f588750c)
 2. Open Workplace and import or create new tools
-![image](https://github.com/user-attachments/assets/09258d0d-9bc3-4c45-b49c-569f8fece188)
+![image](https://github.com/user-attachments/assets/473efafe-be75-4fc9-bd5c-ad8a8b6a29af)
     1. You can import new tools ussing the tools-export-1748790726877.json
     2. Or you can create new tools and paste the tools content from tools.py
-    4. Tunnel your backend server with tools like Ngrok or local dev tunnel
-      ![image](https://github.com/user-attachments/assets/f899e1b7-b5e0-4ae1-9658-adff27f082c3)
-      >or you can use Ngrok with "ngrok http 5000"
+    4. Tunnel your backend server with tools like Ngrok or microsoft local dev tunnel
+      ![image](https://github.com/user-attachments/assets/89a38b6b-5059-4712-9d60-33f37a2d2616)
+          >or you can use Ngrok with "ngrok http 5000" and dont forget to set visibility to public if you use microsoft local dev tunnel
     3. Go on the tools and edit the localhost tunnel link
-      ```python
-      class Valves(BaseModel):
-          CITATION: bool = Field(default="True", description="True or false for citation")
-          searchAPI: str = Field(
-              default="{{your localhost tunnel link}}/api/v0/maps/places"
-          )
-      ```
+          ```python
+          class Valves(BaseModel):
+              CITATION: bool = Field(default="True", description="True or false for citation")
+              searchAPI: str = Field(
+                  default="{{your localhost tunnel link}}/api/v0/maps/places"
+              )
+          ```
     4. Save the changes
      
 3. Make sure the created tools has been set to active
-![image](https://github.com/user-attachments/assets/6e2e3f4b-d0df-41b0-911b-1237ea111dd5)
+![image](https://github.com/user-attachments/assets/97fc57db-27fe-4db6-80f3-22649f2f847a)
 4. You can prompt things like "search sushi in 40.7128,-74.0060" or "search sushi in New York"
-![image](https://github.com/user-attachments/assets/7372fbfc-d337-4121-9601-c79f0ea6310d)
-![image](https://github.com/user-attachments/assets/c3ce6014-f3c3-4814-92ba-73c21e9f88f6)
-
+![image](https://github.com/user-attachments/assets/4b769fd4-2bee-461c-86fd-29621937e566)
+![image](https://github.com/user-attachments/assets/a528f762-5b31-4979-9115-1fb886086a60)
 5. Notice that on the backend server you can see that there is an API being hit
-![image](https://github.com/user-attachments/assets/eee69cd5-ef44-4ed0-a5d7-11223412ea7e)
+![image](https://github.com/user-attachments/assets/ac1d9ff4-eeab-4d67-94bb-88eff4c4660b)
 6. On the Open WebUI you can see the details of the tools in response that all the result are being outputed
-![image](https://github.com/user-attachments/assets/b2a2ee24-ebdd-4bc0-84d2-4779f1b88b40)
+![image](https://github.com/user-attachments/assets/b9543cc7-7586-4e37-b660-62797d2ff85c)
 7. you can use postman to hit and test the created API
-![image](https://github.com/user-attachments/assets/fa2bfcea-d641-4d13-aaa4-4b9d251b9549)
+![image](https://github.com/user-attachments/assets/7ed6f92d-e681-40c9-a0c2-54941e36f3ef)
 
 
 
